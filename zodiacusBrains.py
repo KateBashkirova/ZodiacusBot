@@ -11,7 +11,10 @@ class VkBot:
         # Здесь будет храниться имя пользователя, получаемое функцией _get_user_name_from_vk_id
         self._USERNAME = self._get_user_name_from_vk_id(user_id)
         # Список команд бота
-        self._COMMANDS = ["ПРИВЕТ", "ПОГОДА", "ГОРОСКОП", "ПОКА"]
+        self._COMMANDS = ["ПРИВЕТ",
+                          "/СЕГОДНЯ",
+                          "/ЗАВТРА",
+                          "ПОКА"]
 
     def _get_user_name_from_vk_id(self, user_id):
         # Запрашиваем id юзера
@@ -24,7 +27,55 @@ class VkBot:
         # Возвращаем имя пользователя
         return user_name.split()[0]
 
-    # Метод для очистки от ненужных тэгов
+
+    # Метод, обрабатывающий сообщения пользователя и возвращающий ответ
+    def new_message(self, message):
+
+        # Приветствие. Текст сообщения поднимаем в верхний регистр, чтобы пользователь мог писать и так, и так
+        if message.upper() == self._COMMANDS[0]:
+            return f"Привет, {self._USERNAME}! Я - Зодиакус - твой проводник в мир толкования звёзд.\n Вот список моих команд:\n" \
+                   f"/сегодня - гороскоп для всех знаков на сегодня\n" \
+                   f"/завтра - гороскоп для всех знаков на завтра\n"
+        # Гороскопы
+        # Гороскоп на сегодня
+        elif message.upper() == self._COMMANDS[1]:
+            return f"Вот что звёзды предвещают на сегодня: \n"+self._get_today_horoscope()
+        # Гороскоп на завтра
+        elif message.upper() == self._COMMANDS[2]:
+            return f"Вот что звёзды разглядели на завтра: \n"+self._get_tomorrow_horoscope()
+
+        # Прощание. Текст сообщения поднимаем в верхний регистр, чтобы пользователь мог писать и так, и так
+        elif message.upper() == self._COMMANDS[3]:
+            return f"Пока-пока, {self._USERNAME}!"
+        else:
+            return f"Я ничего не понял..."
+
+    # Получение гороскопа на сегодня:
+    def _get_today_horoscope(self):
+        # Посылаем запрос на страницу с гороскопом
+        request = requests.get("https://horo.mail.ru/prediction/today/")
+        # Получаем ответ, парсим
+        soup = bs4.BeautifulSoup(request.text, "html.parser")
+        # Достаём нужный нам текст
+        headlines = soup.find('div', 'article__item article__item_alignment_left article__item_html').getText()
+        print(headlines)
+        # Возвращаем текст
+        return (headlines)
+
+    # Получение гороскопа на завтра:
+    def _get_tomorrow_horoscope(self):
+        # Посылаем запрос на страницу с гороскопом
+        request = requests.get("https://horo.mail.ru/prediction/tomorrow/")
+        # Получаем ответ, парсим
+        soup = bs4.BeautifulSoup(request.text, "html.parser")
+        # Достаём нужный нам текст
+        headlines = soup.find('div', 'article__item article__item_alignment_left article__item_html').getText()
+        print(headlines)
+        # Возвращаем текст
+        return (headlines)
+
+
+ # Метод для очистки от ненужных тэгов
     @staticmethod
     def _clean_all_tag_from_str(string_line):
         """
@@ -45,29 +96,3 @@ class VkBot:
                     not_skip = True
 
         return result
-
-    # Метод, обрабатывающий сообщения пользователя и возвращающий ответ
-    def new_message(self, message):
-
-        # Приветствие. Текст сообщения поднимаем в верхний регистр, чтобы пользователь мог писать и так, и так
-        if message.upper() == self._COMMANDS[0]:
-            return f"Привет, {self._USERNAME}! Я - Зодиакус - твой проводник в мир толкования звёзд. Напиши гороскоп," \
-                   f" чтобы посмотреть, что планеты уготовили на сегодня"
-
-        # Прощание. Текст сообщения поднимаем в верхний регистр, чтобы пользователь мог писать и так, и так
-        elif message.upper() == self._COMMANDS[3]:
-            return f"Пока-пока, {self._USERNAME}!"
-            # Гороскоп
-        elif message.upper() == self._COMMANDS[2]:
-            return f"Посмотрим, что звёзды предвещают на сегодня... \n"+self._get_today_horoscope()
-        else:
-            return f"Я ничего не понял..."
-
-    # Получение гороскопа:
-    def _get_today_horoscope(self):
-        request = requests.get("https://horo.mail.ru/")
-        soup = bs4.BeautifulSoup(request.text, "html.parser")
-        headlines = soup.find('div', 'article__item article__item_alignment_left article__item_html').getText()
-        print(headlines)
-        return (headlines)
-
