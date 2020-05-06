@@ -43,10 +43,10 @@ class VkBot:
         # Гороскопы
         # Гороскоп на сегодня
         elif message.lower() == self._COMMANDS[1]:
-            return f"Вот что звёзды предвещают на сегодня: \n"+self._get_today_horoscope()
+            return f"Вот что звёзды предвещают для всех знаков на сегодня: \n"+self._get_today_horoscope()
         # Гороскоп на завтра
         elif message.lower() == self._COMMANDS[2]:
-            return f"Вот что звёзды разглядели на завтра: \n"+self._get_tomorrow_horoscope()
+            return f"Вот что звёзды разглядели для всех знаков на завтра: \n"+self._get_tomorrow_horoscope()
         # Гороскоп персональный
         elif message.lower() == self._COMMANDS[3]:
             message = 'Ой'
