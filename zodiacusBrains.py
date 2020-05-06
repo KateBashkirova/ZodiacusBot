@@ -11,11 +11,11 @@ class VkBot:
         # Здесь будет храниться имя пользователя, получаемое функцией _get_user_name_from_vk_id
         self._USERNAME = self._get_user_name_from_vk_id(user_id)
         # Список команд бота
-        self._COMMANDS = ["ПРИВЕТ",
-                          "/СЕГОДНЯ",
-                          "/ЗАВТРА",
-                          "/ПЕРСОНАЛЬНЫЙ",
-                          "ПОКА"]
+        self._COMMANDS = ["привет",
+                          "/сегодня",
+                          "/завтра",
+                          "/персональный",
+                          "пока"]
 
     #Метод, получающий имя пользователя через его id
     def _get_user_name_from_vk_id(self, user_id):
@@ -34,25 +34,25 @@ class VkBot:
     def new_message(self, message):
 
         # Приветствие. Текст сообщения поднимаем в верхний регистр, чтобы пользователь мог писать и так, и так
-        if message.upper() == self._COMMANDS[0]:
+        if message.lower() == self._COMMANDS[0]:
             return f"Привет, {self._USERNAME}! Я - Зодиакус - твой проводник в мир толкования звёзд.\n Вот список моих команд:\n" \
                    f"/сегодня - гороскоп для всех знаков на сегодня\n" \
-                   f"/завтра - гороскоп для всех знаков на завтра\n"
+                   f"/завтра - гороскоп для всех знаков на завтра\n" \
+                   f"/персональный - гороскоп для конкретного знака зодиака"
 
         # Гороскопы
         # Гороскоп на сегодня
-        elif message.upper() == self._COMMANDS[1]:
+        elif message.lower() == self._COMMANDS[1]:
             return f"Вот что звёзды предвещают на сегодня: \n"+self._get_today_horoscope()
         # Гороскоп на завтра
-        elif message.upper() == self._COMMANDS[2]:
+        elif message.lower() == self._COMMANDS[2]:
             return f"Вот что звёзды разглядели на завтра: \n"+self._get_tomorrow_horoscope()
         # Гороскоп персональный
-        elif message.upper() == self._COMMANDS[3]:
+        elif message.lower() == self._COMMANDS[3]:
             message = 'Ой'
             return message
-
         # Прощание. Текст сообщения поднимаем в верхний регистр, чтобы пользователь мог писать и так, и так
-        elif message.upper() == self._COMMANDS[4]:
+        elif message.lower() == self._COMMANDS[4]:
             return f"Пока-пока, {self._USERNAME}!"
         else:
             return f"Я ничего не понял..."
