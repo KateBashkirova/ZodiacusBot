@@ -14,8 +14,10 @@ class VkBot:
         self._COMMANDS = ["ПРИВЕТ",
                           "/СЕГОДНЯ",
                           "/ЗАВТРА",
+                          "/ПЕРСОНАЛЬНЫЙ",
                           "ПОКА"]
 
+    #Метод, получающий имя пользователя через его id
     def _get_user_name_from_vk_id(self, user_id):
         # Запрашиваем id юзера
         request = requests.get("https://vk.com/id" + str(user_id))
@@ -36,6 +38,7 @@ class VkBot:
             return f"Привет, {self._USERNAME}! Я - Зодиакус - твой проводник в мир толкования звёзд.\n Вот список моих команд:\n" \
                    f"/сегодня - гороскоп для всех знаков на сегодня\n" \
                    f"/завтра - гороскоп для всех знаков на завтра\n"
+
         # Гороскопы
         # Гороскоп на сегодня
         elif message.upper() == self._COMMANDS[1]:
@@ -43,9 +46,13 @@ class VkBot:
         # Гороскоп на завтра
         elif message.upper() == self._COMMANDS[2]:
             return f"Вот что звёзды разглядели на завтра: \n"+self._get_tomorrow_horoscope()
+        # Гороскоп персональный
+        elif message.upper() == self._COMMANDS[3]:
+            message = 'Ой'
+            return message
 
         # Прощание. Текст сообщения поднимаем в верхний регистр, чтобы пользователь мог писать и так, и так
-        elif message.upper() == self._COMMANDS[3]:
+        elif message.upper() == self._COMMANDS[4]:
             return f"Пока-пока, {self._USERNAME}!"
         else:
             return f"Я ничего не понял..."
@@ -64,15 +71,12 @@ class VkBot:
 
     # Получение гороскопа на завтра:
     def _get_tomorrow_horoscope(self):
-        # Посылаем запрос на страницу с гороскопом
         request = requests.get("https://horo.mail.ru/prediction/tomorrow/")
-        # Получаем ответ, парсим
         soup = bs4.BeautifulSoup(request.text, "html.parser")
-        # Достаём нужный нам текст
         headlines = soup.find('div', 'article__item article__item_alignment_left article__item_html').getText()
         print(headlines)
-        # Возвращаем текст
         return (headlines)
+
 
 
  # Метод для очистки от ненужных тэгов
