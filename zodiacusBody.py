@@ -4,20 +4,23 @@ import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from zodiacusBrains import VkBot
 
-
 # API токен сообщества
 mytoken = 'b8bfa52f5f8b7f2f5d9c787032a5d4b9aac5f9f06e82b3b736ce3a5315cb6bcccb1a725805a2ec024147c'
-
 
 # Авторизуемся как сообщество
 vk = vk_api.VkApi(token=mytoken)
 longpoll = VkLongPoll(vk)
 
+#TODO: сделать кнопку "привет" в начале работы. Подумать насчёт / в командах. Довести до ума кнопки выбора знаков
+#TODO: зодиака - дать выбор знака по кнопке. Сделать кноку "стоп", появляющуюся только в цикле /персональный
 
 def write_msg(user_id, message):
     """Функция, посылающая сообщение"""
     random_id = vk_api.utils.get_random_id()
-    vk.method('messages.send', {'user_id': user_id, 'message': message, 'random_id': random_id})
+    # Читаем вид новой клавиатуры из json файла
+    keyboard = open("keyboard.json", "r", encoding="UTF-8").read()
+    # Вызываем метод отправки сообщения с переопределённой клавиатурой
+    vk.method('messages.send', {'user_id': user_id, 'message': message, 'random_id': random_id, 'keyboard': keyboard})
 
 
 def switch_sings(argument):
@@ -135,7 +138,7 @@ for event in longpoll.listen():
             # Инициализируем часть бота из zodiacusBrains.py для обработки первичных и самых лёгких команд
             bot = VkBot(event.user_id)
 
-        # Обработка команд
+            # Обработка команд
 
             # Если получена команда "/персональный"
             if event.text == "/персональный":
@@ -149,12 +152,11 @@ for event in longpoll.listen():
                           + _get_today_horoscope("today"))
             # Если запросили гороскоп для всех знаков на следующий день
             elif event.text.lower() == "/завтра":
-                write_msg(event.user_id, "Вот что звёзды говорят для всех знаков на завтра:\n"\
-                        + _get_today_horoscope("tomorrow"))
+                write_msg(event.user_id, "Вот что звёзды говорят для всех знаков на завтра:\n" \
+                          + _get_today_horoscope("tomorrow"))
             else:
                 # Получаем id юзера, который отправил сообщение, чтобы ответить ему;
                 write_msg(event.user_id, bot.new_message(event.text))
 
             # Для вывода в консоли (необязательно)
             print('Text: ', event.text)
-

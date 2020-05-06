@@ -1,0 +1,33 @@
+{
+  "one_time": false,
+  "buttons": [
+    [{
+      "action": {
+        "type": "text",
+        "label": "/команды"
+      },
+      "color": "positive"
+    },
+      {
+      "action": {
+        "type": "text",
+        "label": "/сегодня"
+      },
+      "color": "positive"
+    },
+      {
+        "action": {
+          "type": "text",
+          "label": "/завтра"
+        },
+        "color": "positive"
+      },
+    {
+      "action": {
+        "type": "text",
+        "label": "/персональный"
+      },
+      "color": "positive"
+    }]
+  ]
+}
