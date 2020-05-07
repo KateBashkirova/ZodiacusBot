@@ -4,28 +4,28 @@
     [{
       "action": {
         "type": "text",
-        "label": "/команды"
+        "label": "сегодня"
       },
       "color": "positive"
     },
-      {
-      "action": {
-        "type": "text",
-        "label": "/сегодня"
-      },
-      "color": "positive"
-    },
-      {
-        "action": {
-          "type": "text",
-          "label": "/завтра"
-        },
-        "color": "positive"
-      },
     {
       "action": {
         "type": "text",
-        "label": "/персональный"
+        "label": "завтра"
+        },
+      "color": "positive"
+      }],
+    [{
+      "action": {
+        "type": "text",
+        "label": "персональный"
+      },
+      "color": "positive"
+    }],
+    [{
+      "action": {
+        "type": "text",
+        "label": "команды"
       },
       "color": "positive"
     }]

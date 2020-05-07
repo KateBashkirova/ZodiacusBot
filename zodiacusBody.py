@@ -11,13 +11,10 @@ mytoken = 'b8bfa52f5f8b7f2f5d9c787032a5d4b9aac5f9f06e82b3b736ce3a5315cb6bcccb1a7
 vk = vk_api.VkApi(token=mytoken)
 longpoll = VkLongPoll(vk)
 
-#TODO: сделать кнопку "привет" в начале работы. Подумать насчёт / в командах. Довести до ума кнопки выбора знаков
-#TODO: зодиака - дать выбор знака по кнопке. Сделать кноку "стоп", появляющуюся только в цикле /персональный
 
 def write_msg(user_id, message):
     """Функция, посылающая сообщение"""
     random_id = vk_api.utils.get_random_id()
-    # Читаем вид новой клавиатуры из json файла
     keyboard = open("keyboard.json", "r", encoding="UTF-8").read()
     # Вызываем метод отправки сообщения с переопределённой клавиатурой
     vk.method('messages.send', {'user_id': user_id, 'message': message, 'random_id': random_id, 'keyboard': keyboard})
@@ -62,7 +59,7 @@ def _get_personal_horoscope(sign, text):
 
 
 # Получение общего гороскопа:
-def _get_today_horoscope(day):
+def _get_horoscope_for_all(day):
     """
     Функция получения гороскопа в зависимости от дня недели
     :param day введённый пользователем день, на который нужно искать гороскоп
@@ -79,7 +76,7 @@ def _get_today_horoscope(day):
 
 def _personal_command(event):
     """
-    Функция обработки команды /персональный.
+    Функция обработки команды персональный.
     :param event событие
     :return сообщение с персональным гороскопом
     """
@@ -90,10 +87,10 @@ def _personal_command(event):
         # Считываем, что ответил пользователь
         if event.type == VkEventType.MESSAGE_NEW:
             if event.to_me:
-                # Если пользователь ввёл команду "/стоп"
-                if event.text.lower() == "/стоп":
+                # Если пользователь ввёл команду "стоп"
+                if event.text.lower() == "стоп":
                     _stop_command(event)
-                    # Бот выходит из цикла обработки команды /персональный и готов исполнять другие команды
+                    # Бот выходит из цикла обработки команды персональный и готов исполнять другие команды
                     break
                 # Если команды "/стоп" не было
                 else:
@@ -102,25 +99,25 @@ def _personal_command(event):
                     # Словить некорректный ввод. Предупредить и слушать дальше
                     if sign == -1:
                         write_msg(event.user_id, "Такого знака я не знаю... Попробуй ввести ещё раз или "
-                                                 "напиши /стоп, если не хочешь больше искать гороскопы.")
+                                                 "напиши стоп, если не хочешь больше искать гороскопы.")
                     # Если всё введено корректно
                     else:
                         # Вызвать метод нахождения гороскопа по знаку зодиака, вернувшиеся данные вывести
                         write_msg(event.user_id, _get_personal_horoscope(sign, event.text.lower()))
                         write_msg(event.user_id, "Насчёт какого знака зодиака спрашиваем звёзды?\n"
-                                                 "Введи /стоп, если не хочешь больше искать гороскопы "
+                                                 "Введи стоп, если не хочешь больше искать гороскопы "
                                                  "для конкретного знака.")
 
 
 def _stop_command(event):
-    """Функция обработки команды /стоп"""
+    """Функция обработки команды стоп"""
     write_msg(event.user_id, "Хорошо, больше никаких гороскопов. "
                              "Но я всегда готов сделать что-нибудь другое! "
                              "Введи /команды, чтобы посмотреть список команд.")
 
 
 def _show_commands(event):
-    """Функция обработки команды /команды"""
+    """Функция обработки команды команды"""
     write_msg(event.user_id, "Вот список моих команд:\n" + bot.read_command_file())
 
 
@@ -141,19 +138,19 @@ for event in longpoll.listen():
             # Обработка команд
 
             # Если получена команда "/персональный"
-            if event.text == "/персональный":
+            if event.text == "персональный":
                 _personal_command(event)
             # Если получена команда на просмотр всех команд
-            elif event.text.lower() == "/команды":
+            elif event.text.lower() == "команды":
                 _show_commands(event)
             # Если запросили гороскоп для всех знаков на текущий день
-            elif event.text.lower() == "/сегодня":
+            elif event.text.lower() == "сегодня":
                 write_msg(event.user_id, "Вот что звёзды рассмотрели для всех знаков на сегодня:\n" \
-                          + _get_today_horoscope("today"))
+                          + _get_horoscope_for_all("today"))
             # Если запросили гороскоп для всех знаков на следующий день
-            elif event.text.lower() == "/завтра":
+            elif event.text.lower() == "завтра":
                 write_msg(event.user_id, "Вот что звёзды говорят для всех знаков на завтра:\n" \
-                          + _get_today_horoscope("tomorrow"))
+                          + _get_horoscope_for_all("tomorrow"))
             else:
                 # Получаем id юзера, который отправил сообщение, чтобы ответить ему;
                 write_msg(event.user_id, bot.new_message(event.text))
