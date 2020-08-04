@@ -5,7 +5,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from zodiacusBrains import VkBot
 
 # API токен сообщества
-mytoken = 'b8bfa52f5f8b7f2f5d9c787032a5d4b9aac5f9f06e82b3b736ce3a5315cb6bcccb1a725805a2ec024147c'
+mytoken = ''
 
 # Авторизуемся как сообщество
 vk = vk_api.VkApi(token=mytoken)
